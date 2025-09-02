@@ -1,0 +1,36 @@
+import { CreateTodoDto } from './dto/create-todo.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Todo } from './entities/todo.entity';
+import { UpdateTodoDto } from './dto/update-todo.dto';
+
+@Injectable()
+export class TodoService {
+  constructor(
+    @InjectRepository(Todo)
+    private todoRepository: Repository<Todo>,
+  ) {}
+
+  create(createTodoDto: CreateTodoDto): Promise<Todo> {
+    const todo = this.todoRepository.create(createTodoDto);
+    return this.todoRepository.save(todo);
+  }
+
+  findAll(): Promise<Todo[]> {
+    return this.todoRepository.find({ order: { updateTime: 'DESC' } });
+  }
+
+  findOne(id: number): Promise<Todo | null> {
+    return this.todoRepository.findOneBy({ id });
+  }
+
+  async update(id: number, updateTodoDto: UpdateTodoDto) {
+    await this.todoRepository.update(id, updateTodoDto);
+    return this.todoRepository.findOneBy({ id });
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} todo`;
+  }
+}
