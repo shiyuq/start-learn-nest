@@ -1,6 +1,7 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
@@ -15,7 +16,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
       map((data) => {
         // 在这里对正常返回的数据统一组装
         return {
-          status: 200,
+          status: HttpStatus.OK,
           timestamp: Date.now(),
           data,
         };

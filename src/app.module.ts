@@ -8,7 +8,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AllConfigType } from './config/config.type';
 import { AllExceptionsFilter } from './common/filters/all-exception-filter';
+import { AuthGuard } from './common/guard/auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 // import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { RolesGuard } from './common/guard/role.guard';
 import { TodoModule } from './modules/todo/todo.module';
@@ -16,6 +18,7 @@ import { TransformInterceptor } from './common/interceptor/global.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import config from './config';
+import { jwtConstants } from './constants';
 
 @Module({
   imports: [
@@ -43,6 +46,11 @@ import config from './config';
           synchronize: false,
         };
       },
+    }),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
     }),
     TodoModule,
     AuthModule,
@@ -76,6 +84,10 @@ import config from './config';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })
