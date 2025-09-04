@@ -1,15 +1,21 @@
-import { CreateTodoDto } from './dto/create-todo.dto';
+import { CreateTodoDto } from '../dto/create-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Todo } from './entities/todo.entity';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Todo } from '../entities/todo.entity';
+import { UpdateTodoDto } from '../dto/update-todo.dto';
+import { BusinessErrorHelper } from '../../../common/utils/business-error.helper';
 
 @Injectable()
 export class TodoService {
   constructor(
     @InjectRepository(Todo)
-    private todoRepository: Repository<Todo>,
+    private readonly todoRepository: Repository<Todo>,
   ) {}
 
   create(createTodoDto: CreateTodoDto): Promise<Todo> {
@@ -26,8 +32,10 @@ export class TodoService {
   }
 
   async update(id: number, updateTodoDto: UpdateTodoDto) {
-    await this.todoRepository.update(id, updateTodoDto);
-    return this.todoRepository.findOneBy({ id });
+    const entity = await this.todoRepository.findOneBy({ id });
+    if (!entity) BusinessErrorHelper.todoNotFound();
+    Object.assign(entity, updateTodoDto);
+    return this.todoRepository.save(entity);
   }
 
   remove(id: number) {

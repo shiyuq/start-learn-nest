@@ -8,9 +8,10 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { TodoService } from '../services/todo.service';
+import { CreateTodoDto } from '../dto/create-todo.dto';
+import { UpdateTodoDto } from '../dto/update-todo.dto';
+import { Roles } from '../../../common/guard/roles.decorator';
 
 @Controller('todo')
 export class TodoController {
@@ -40,8 +41,10 @@ export class TodoController {
     return this.todoService.update(id, updateTodoDto);
   }
 
+  // 只有 Admin 角色才能删除todo数据库中的数据
+  @Roles(['Admin'])
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todoService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.todoService.remove(id);
   }
 }
