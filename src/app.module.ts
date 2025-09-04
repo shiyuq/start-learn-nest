@@ -6,29 +6,36 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { AllConfigType } from './config/config.type';
 import { AllExceptionsFilter } from './common/filters/all-exception-filter';
+import { AuthModule } from './modules/auth/auth.module';
+// import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { RolesGuard } from './common/guard/role.guard';
 import { TodoModule } from './modules/todo/todo.module';
 import { TransformInterceptor } from './common/interceptor/global.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import configuration from './config/configuration';
-import mysqlConfig from './config/mysql';
+import { UsersModule } from './modules/users/users.module';
+import config from './config';
 
 @Module({
   imports: [
+    // 开发环境开启devtools，但是要收费，主要看依赖关系
+    // DevtoolsModule.register({
+    //   http: process.env.NODE_ENV !== 'production',
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:
         process.env.NODE_ENV === 'production'
           ? []
           : [`.env.${process.env.NODE_ENV || 'development'}`],
-      load: [configuration, mysqlConfig],
+      load: [config.configuration, config.mysql],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const mysql = configService.get('mysql');
+      useFactory: (configService: ConfigService<AllConfigType>) => {
+        const mysql = configService.getOrThrow('mysql', { infer: true });
         return {
           ...mysql,
           type: 'mysql',
@@ -38,6 +45,8 @@ import mysqlConfig from './config/mysql';
       },
     }),
     TodoModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [
