@@ -1,4 +1,5 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { AllConfigType, appConfig, mysqlConfig } from '@/config';
 import {
   AllExceptionsFilter,
   AuthGuard,
@@ -12,9 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { appConfig, mysqlConfig } from '@/config';
 
-import { AllConfigType } from '@/config/config.type';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { jwtConstants } from '@/constants';

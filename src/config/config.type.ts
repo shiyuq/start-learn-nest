@@ -1,5 +1,5 @@
-import { AppConfig } from './configuration.type';
-import { MysqlConfig } from './mysql.type';
+import { AppConfig } from './configuraion/configuration.type';
+import { MysqlConfig } from './mysql/mysql.type';
 
 export type AllConfigType = {
   app: AppConfig;
