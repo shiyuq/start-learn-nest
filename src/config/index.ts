@@ -1,7 +1,2 @@
-import configuration from './configuration';
-import mysql from './mysql';
-
-export default {
-  configuration,
-  mysql,
-};
+export { default as appConfig } from './configuration';
+export { default as mysqlConfig } from './mysql';

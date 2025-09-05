@@ -1,5 +1,5 @@
 import { BusinessException } from '../filters/business-exception-filter';
-import { TodoErrorCode } from '../../constants/error-codes/todo.error';
+import { TodoErrorCode } from '@/constants';
 
 export class BusinessErrorHelper {
   // TODO模块

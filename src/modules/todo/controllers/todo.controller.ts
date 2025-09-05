@@ -11,7 +11,8 @@ import {
 import { TodoService } from '../services/todo.service';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
-import { Roles } from '../../../common/guard/roles.decorator';
+import { Roles } from '@/common';
+import { Role } from '@/constants';
 
 @Controller('todo')
 export class TodoController {
@@ -42,7 +43,7 @@ export class TodoController {
   }
 
   // 只有 Admin 角色才能删除todo数据库中的数据
-  @Roles(['Admin'])
+  @Roles([Role.Admin])
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.todoService.remove(id);

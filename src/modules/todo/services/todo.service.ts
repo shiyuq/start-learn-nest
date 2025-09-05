@@ -9,7 +9,7 @@ import {
 import { Repository } from 'typeorm';
 import { Todo } from '../entities/todo.entity';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
-import { BusinessErrorHelper } from '../../../common/utils/business-error.helper';
+import { BusinessErrorHelper } from '@/common';
 
 @Injectable()
 export class TodoService {
