@@ -82,11 +82,11 @@ import { jwtConstants } from '@/constants';
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: AuthGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: RolesGuard,
     },
   ],
 })
