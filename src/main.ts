@@ -6,12 +6,37 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 // import { Reflector } from '@nestjs/core';
 import { logger } from '@/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+  // 跨域配置
+  // app.enableCors();
 
   // 全局中间件
+  // logger日志中间件
   app.use(logger);
+  // helmet 中间件，设置各种 HTTP 头，防止一些已知的攻击，兼容apollo/server
+  app.use(
+    helmet({
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: {
+        directives: {
+          imgSrc: [
+            `'self'`,
+            'data:',
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+          manifestSrc: [
+            `'self'`,
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          frameSrc: [`'self'`, 'sandbox.embed.apollographql.com'],
+        },
+      },
+    }),
+  );
 
   // 全局异常过滤器
   // 可以放到 AppModule 里提供，也可以像下面这样全局使用
