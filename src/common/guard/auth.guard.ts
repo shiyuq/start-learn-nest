@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from '../decorator/public.decorator';
 import { Reflector } from '@nestjs/core';
@@ -19,6 +20,8 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    if (context.getType() === 'graphql') return true;
+
     const isPublic = this.reflector.get(Public, context.getHandler());
     if (isPublic) {
       return true;

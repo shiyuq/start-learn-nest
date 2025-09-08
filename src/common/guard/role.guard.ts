@@ -9,6 +9,8 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+    if (context.getType() === 'graphql') return true;
+
     const roles = this.reflector.get(Roles, context.getHandler());
     if (_.isEmpty(roles)) {
       return true;

@@ -12,6 +12,9 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, any> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    if (context.getType() === 'graphql') {
+      return next.handle();
+    }
     return next.handle().pipe(
       map((data) => {
         // 在这里对正常返回的数据统一组装

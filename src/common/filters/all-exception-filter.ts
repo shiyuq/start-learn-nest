@@ -3,18 +3,24 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Injectable,
+  NestMiddleware,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+import { ApolloError } from 'apollo-server-errors';
 import { BusinessException } from './business-exception-filter';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown | any, host: ArgumentsHost) {
+    if (host.getType<'http' | 'graphql'>() === 'graphql') {
+      return new ApolloError(exception?.message, '500');
+    }
+
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-
     let code = 50000;
     let message = '系统异常，请稍后重试';
     let status = 500;

@@ -6,7 +6,8 @@ import {
   RolesGuard,
   TransformInterceptor,
 } from '@/common';
-import { AuthModule, TodoModule, UsersModule } from '@/modules';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ArticleModule, AuthModule, TodoModule, UsersModule } from '@/modules';
 import {
   ClassSerializerInterceptor,
   Module,
@@ -14,8 +15,11 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { jwtConstants } from '@/constants';
 
 @Module({
@@ -49,13 +53,22 @@ import { jwtConstants } from '@/constants';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1h' },
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      typePaths: ['./**/*.graphql'], // 指定 schema 文件路径
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+      },
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     TodoModule,
     AuthModule,
     UsersModule,
+    ArticleModule,
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_FILTER,
