@@ -12,6 +12,9 @@ export class ArticleResolver {
     return this.articleService.create(createArticleInput);
   }
 
+  // import { Public } from '@/common';
+  // 这里加了@Public()装饰器，表示这个接口不需要认证，直接可以访问
+  // @Public()
   @Query('articles')
   findAll() {
     return this.articleService.findAll();
