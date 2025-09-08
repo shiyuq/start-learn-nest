@@ -15,18 +15,20 @@ import { jwtConstants } from '@/constants';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (context.getType() === 'graphql') return true;
-
     const isPublic = this.reflector.get(Public, context.getHandler());
     if (isPublic) {
       return true;
     }
-    const request = context.switchToHttp().getRequest();
+
+    const request =
+      context.getType() === 'graphql'
+        ? GqlExecutionContext.create(context).getContext().req
+        : context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();

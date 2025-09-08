@@ -8,19 +8,13 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-import { ApolloError } from 'apollo-server-errors';
 import { BusinessException } from './business-exception-filter';
+import { GqlArgumentsHost } from '@nestjs/graphql';
+import { GraphQLError } from 'graphql';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: unknown | any, host: ArgumentsHost) {
-    if (host.getType<'http' | 'graphql'>() === 'graphql') {
-      return new ApolloError(exception?.message, '500');
-    }
-
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+  catch(exception: unknown, host: ArgumentsHost) {
     let code = 50000;
     let message = '系统异常，请稍后重试';
     let status = 500;
@@ -54,12 +48,28 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = exception.message || message;
     }
 
-    response.status(status).json({
-      status: code,
-      message,
-      data: null,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-    });
+    if (host.getType() !== 'graphql') {
+      const ctx = host.switchToHttp();
+      const response = ctx.getResponse<Response>();
+      const request = ctx.getRequest<Request>();
+      response.status(status).json({
+        status: code,
+        message,
+        data: null,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      });
+    } else {
+      const gqlHost = GqlArgumentsHost.create(host);
+      return new GraphQLError(message, {
+        extensions: {
+          status: code,
+          message,
+          data: null,
+          timestamp: new Date().toISOString(),
+          path: gqlHost.getInfo().path.key, // 出错的字段名
+        },
+      });
+    }
   }
 }
