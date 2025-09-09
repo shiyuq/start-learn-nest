@@ -1,5 +1,5 @@
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { AllConfigType, appConfig, mysqlConfig } from '@/config';
+import { AllConfigType, appConfig, mongoConfig, mysqlConfig } from '@/config';
 import {
   AllExceptionsFilter,
   AuthGuard,
@@ -18,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { jwtConstants } from '@/constants';
@@ -35,7 +36,7 @@ import { jwtConstants } from '@/constants';
         process.env.NODE_ENV === 'production'
           ? []
           : [`.env.${process.env.NODE_ENV || 'development'}`],
-      load: [appConfig, mysqlConfig],
+      load: [appConfig, mysqlConfig, mongoConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -47,6 +48,16 @@ import { jwtConstants } from '@/constants';
           type: 'mysql',
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: false,
+        };
+      },
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AllConfigType>) => {
+        const mongo = configService.getOrThrow('mongo', { infer: true });
+        return {
+          uri: mongo.uri,
         };
       },
     }),
