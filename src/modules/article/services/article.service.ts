@@ -15,8 +15,8 @@ export class ArticleService {
     ];
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  findOne(id: number, status: number) {
+    return { exampleField: id };
   }
 
   update(id: number, updateArticleInput: UpdateArticleInput) {

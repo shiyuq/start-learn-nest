@@ -1,3 +1,4 @@
+import { ParseIntPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { ArticleService } from '../services/article.service';
 import { CreateArticleInput } from '../dto/create-article.input';
@@ -21,8 +22,11 @@ export class ArticleResolver {
   }
 
   @Query('article')
-  findOne(@Args('id') id: number) {
-    return this.articleService.findOne(id);
+  findOne(
+    @Args('id') id: number,
+    @Args('status', ParseIntPipe) status: number,
+  ) {
+    return this.articleService.findOne(id, status);
   }
 
   @Mutation('updateArticle')

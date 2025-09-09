@@ -1,6 +1,7 @@
 type Article {
   # Example field (placeholder)
   exampleField: Int
+  result: String
 }
 
 input CreateArticleInput {
@@ -14,7 +15,7 @@ input UpdateArticleInput {
 
 type Query {
   articles: [Article]!
-  article(id: Int!): Article
+  article(id: Int!, status: String!): Article
 }
 
 type Mutation {

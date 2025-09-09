@@ -18,11 +18,12 @@ export interface UpdateArticleInput {
 
 export interface Article {
     exampleField?: Nullable<number>;
+    result?: Nullable<string>;
 }
 
 export interface IQuery {
     articles(): Nullable<Article>[] | Promise<Nullable<Article>[]>;
-    article(id: number): Nullable<Article> | Promise<Nullable<Article>>;
+    article(id: number, status: string): Nullable<Article> | Promise<Nullable<Article>>;
 }
 
 export interface IMutation {
