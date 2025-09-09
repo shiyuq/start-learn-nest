@@ -1,10 +1,17 @@
 import { ParseIntPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { ArticleService } from '../services/article.service';
 import { CreateArticleInput } from '../dto/create-article.input';
 import { UpdateArticleInput } from '../dto/update-article.input';
 
-@Resolver('Query')
+@Resolver('Article')
 export class ArticleResolver {
   constructor(private readonly articleService: ArticleService) {}
 
@@ -27,6 +34,13 @@ export class ArticleResolver {
     @Args('status', ParseIntPipe) status: number,
   ) {
     return this.articleService.findOne(id, status);
+  }
+
+  @ResolveField('value')
+  async getValue(@Parent() article: any) {
+    // 可以从外层解析字段article中获取参数
+    // const { exampleField } = article;
+    return { exampleField: 11, result: 'ok' };
   }
 
   @Mutation('updateArticle')

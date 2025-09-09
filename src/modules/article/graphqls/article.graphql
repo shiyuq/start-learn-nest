@@ -2,6 +2,7 @@ type Article {
   # Example field (placeholder)
   exampleField: Int
   result: String
+  value: Article
 }
 
 input CreateArticleInput {

@@ -19,6 +19,7 @@ export interface UpdateArticleInput {
 export interface Article {
     exampleField?: Nullable<number>;
     result?: Nullable<string>;
+    value?: Nullable<Article>;
 }
 
 export interface IQuery {

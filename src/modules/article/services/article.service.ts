@@ -10,8 +10,14 @@ export class ArticleService {
 
   findAll() {
     return [
-      { exampleField: 1, result: 'ok' },
-      { exampleField: 2, result: 'ok' },
+      {
+        exampleField: 1,
+        result: 'ok',
+      },
+      {
+        exampleField: 2,
+        result: 'ok',
+      },
     ];
   }
 
