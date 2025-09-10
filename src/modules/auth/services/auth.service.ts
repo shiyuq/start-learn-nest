@@ -28,4 +28,10 @@ export class AuthService {
       access_token: `Bearer ${token}`,
     };
   }
+
+  async getUserList() {
+    // const users = await this.usersService.create('shiyuq', '18752739756');
+    const users = await this.usersService.getUsers();
+    return users;
+  }
 }

@@ -22,4 +22,9 @@ export class AuthController {
   getProfile(@Request() req: any) {
     return req.user;
   }
+
+  @Post('userlist')
+  async getUsers() {
+    return this.authService.getUserList();
+  }
 }

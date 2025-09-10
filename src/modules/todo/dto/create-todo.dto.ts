@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 
-import { TodoStatus } from '../entities/todo.entity';
+import { TodoStatus } from '@/database/entities';
 
 export class CreateTodoDto {
   @IsString()
@@ -16,5 +16,5 @@ export class CreateTodoDto {
   @IsOptional()
   @IsNumber()
   @IsEnum(TodoStatus)
-  status?: number; // 1=未完成, 2=完成
+  status?: TodoStatus; // 1=未完成, 2=完成
 }

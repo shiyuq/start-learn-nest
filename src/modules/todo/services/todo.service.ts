@@ -7,7 +7,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Todo } from '../entities/todo.entity';
+import { Todo } from '@/database/entities';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 import { BusinessErrorHelper } from '@/common';
 
