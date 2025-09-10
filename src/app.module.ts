@@ -16,6 +16,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -26,10 +27,12 @@ import { jwtConstants } from '@/constants';
 @Module({
   imports: [
     // 开发环境开启devtools，但是要收费，主要看依赖关系
-    // import { DevtoolsModule } from '@nestjs/devtools-integration';
-    // DevtoolsModule.register({
-    //   http: process.env.NODE_ENV !== 'production',
-    // }),
+    DevtoolsModule.register({
+      // http: process.env.NODE_ENV !== 'production',
+      // port: process.env.NODE_ENV !== 'production' ? 9229 : undefined,
+      http: true,
+      port: 9229,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath:

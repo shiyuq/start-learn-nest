@@ -9,7 +9,10 @@ import { logger } from '@/common';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    snapshot: true,
+  });
   // 跨域配置
   // app.enableCors();
 
