@@ -48,7 +48,8 @@ import { jwtConstants } from '@/constants';
         return {
           ...mysql,
           type: 'mysql',
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          autoLoadEntities: true,
           synchronize: false,
         };
       },
