@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const request =
-      context.getType() === 'graphql'
+      (context.getType() as string) === 'graphql'
         ? GqlExecutionContext.create(context).getContext().req
         : context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);

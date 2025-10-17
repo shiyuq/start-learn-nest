@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, any> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    if (context.getType() === 'graphql') {
+    if ((context.getType() as string) === 'graphql') {
       return next.handle();
     } else {
       return next.handle().pipe(

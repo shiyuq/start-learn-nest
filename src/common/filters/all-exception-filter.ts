@@ -48,7 +48,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = exception.message || message;
     }
 
-    if (host.getType() !== 'graphql') {
+    if ((host.getType() as string) !== 'graphql') {
       const ctx = host.switchToHttp();
       const response = ctx.getResponse<Response>();
       const request = ctx.getRequest<Request>();

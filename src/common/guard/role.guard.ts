@@ -10,14 +10,14 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    if (context.getType() === 'graphql') return true;
+    if ((context.getType() as string) === 'graphql') return true;
 
     const roles = this.reflector.get(Roles, context.getHandler());
     if (_.isEmpty(roles)) {
       return true;
     }
     const request =
-      context.getType() === 'graphql'
+      (context.getType() as string) === 'graphql'
         ? GqlExecutionContext.create(context).getContext().req
         : context.switchToHttp().getRequest();
     const user = request.user;

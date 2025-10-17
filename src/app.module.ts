@@ -16,6 +16,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { AppController } from './app.controller';
 // import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
@@ -72,10 +73,11 @@ import { jwtConstants } from '@/constants';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'], // 指定 schema 文件路径
-      definitions: {
-        path: join(process.cwd(), 'src/graphql.ts'),
-      },
+      // definitions: {
+      //   path: join(process.cwd(), 'src/graphql.ts'),
+      // },
       playground: false,
+      introspection: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     TodoModule,
@@ -83,6 +85,7 @@ import { jwtConstants } from '@/constants';
     UsersModule,
     ArticleModule,
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_FILTER,
