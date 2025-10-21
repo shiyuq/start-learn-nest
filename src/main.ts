@@ -1,24 +1,27 @@
 import { AllConfigType } from './config/config.type';
 // import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+// import { ConsoleLogger } from '@nestjs/common';
 // import { AllExceptionsFilter } from './exceptionFilter/all-exception-filter';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 // import { Reflector } from '@nestjs/core';
-import { logger } from '@/common';
+import { StructuredLogger, HttpLoggerMiddleware } from '@/common';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
     snapshot: true,
+    bufferLogs: true,
+    logger: new StructuredLogger(),
   });
   // 跨域配置
   // app.enableCors();
 
   // 全局中间件
   // logger日志中间件
-  app.use(logger);
+  // app.use(new HttpLoggerMiddleware());
   // helmet 中间件，设置各种 HTTP 头，防止一些已知的攻击，兼容apollo/server
   app.use(
     helmet({

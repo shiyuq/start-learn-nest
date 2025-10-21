@@ -7,3 +7,4 @@ export * from './guard/role.guard';
 export * from './interceptor/global.interceptor';
 export * from './middleware/logger.middleware';
 export * from './utils/business-error.helper';
+export * from './log/logger.service';

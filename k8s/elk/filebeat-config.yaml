@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+      - type: container
+        paths:
+          - /var/log/containers/*.log
+        json.keys_under_root: true
+        json.add_error_key: true
+        json.message_key: message
+        processors:
+          - add_kubernetes_metadata:
+              in_cluster: true
+
+    output.elasticsearch:
+      hosts: ["http://elasticsearch:9200"]

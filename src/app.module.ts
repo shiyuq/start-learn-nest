@@ -3,6 +3,7 @@ import { AllConfigType, appConfig, mongoConfig, mysqlConfig } from '@/config';
 import {
   AllExceptionsFilter,
   AuthGuard,
+  HttpLoggerMiddleware,
   RolesGuard,
   TransformInterceptor,
 } from '@/common';
@@ -10,7 +11,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ArticleModule, AuthModule, TodoModule, UsersModule } from '@/modules';
 import {
   ClassSerializerInterceptor,
+  MiddlewareConsumer,
   Module,
+  NestModule,
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -22,7 +25,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path';
 import { jwtConstants } from '@/constants';
 
 @Module({
@@ -73,9 +75,6 @@ import { jwtConstants } from '@/constants';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./**/*.graphql'], // 指定 schema 文件路径
-      // definitions: {
-      //   path: join(process.cwd(), 'src/graphql.ts'),
-      // },
       playground: false,
       introspection: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
@@ -120,4 +119,8 @@ import { jwtConstants } from '@/constants';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HttpLoggerMiddleware).forRoutes('*'); // 对所有路由生效
+  }
+}
